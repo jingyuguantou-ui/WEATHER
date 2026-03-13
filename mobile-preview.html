@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>移动端预览 - 全球城市实时天气</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #1a1a2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.3), inset 0 0 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+            background: #0a0a12;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 30px;
+        }
+        
+        /* 模拟刘海 */
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 25px;
+            background: #000;
+            border-radius: 0 0 15px 15px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        
+        /* 底部手势提示 */
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 2px;
+            z-index: 9999;
+        }
+        
+        .preview-info {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 240, 255, 0.2);
+            border: 1px solid var(--holo-cyan);
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: #00f0ff;
+            font-size: 14px;
+        }
+        
+        .preview-info h3 {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .preview-info ul {
+            list-style: none;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .preview-info li {
+            margin: 5px 0;
+        }
+        
+        .device-selector {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .device-btn {
+            padding: 10px 15px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        
+        .device-btn:hover, .device-btn.active {
+            background: rgba(0, 240, 255, 0.3);
+            border-color: #00f0ff;
+            color: #00f0ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="device-selector">
+        <button class="device-btn active" onclick="setDevice('iphone')">iPhone X</button>
+        <button class="device-btn" onclick="setDevice('ipad')">iPad</button>
+        <button class="device-btn" onclick="setDevice('android')">Android</button>
+    </div>
+    
+    <div class="preview-info">
+        <h3>📱 移动端预览</h3>
+        <ul>
+            <li>分辨率: 375 × 812</li>
+            <li>设备: iPhone X 模拟</li>
+            <li>请在页面加载后测试</li>
+        </ul>
+    </div>
+    
+    <div class="phone-frame">
+        <div class="notch"></div>
+        <div class="phone-screen">
+            <iframe id="previewFrame" src="index.html"></iframe>
+        </div>
+        <div class="home-indicator"></div>
+    </div>
+
+    <script>
+        const devices = {
+            iphone: { width: 375, height: 812, name: 'iPhone X' },
+            ipad: { width: 768, height: 1024, name: 'iPad' },
+            android: { width: 360, height: 640, name: 'Android' }
+        };
+        
+        function setDevice(device) {
+            const frame = document.querySelector('.phone-frame');
+            const deviceInfo = devices[device];
+            
+            frame.style.width = deviceInfo.width + 'px';
+            frame.style.height = deviceInfo.height + 'px';
+            
+            document.querySelectorAll('.device-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            document.querySelector('.preview-info li:first-child').textContent = 
+                '分辨率: ' + deviceInfo.width + ' × ' + deviceInfo.height;
+            document.querySelector('.preview-info li:nth-child(2)').textContent = 
+                '设备: ' + deviceInfo.name + ' 模拟';
+        }
+    </script>
+</body>
+</html>
